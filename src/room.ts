@@ -1,5 +1,5 @@
 import { GameRoom } from "@oogg/game-server";
-import { State, type ClientMsg, type RoomMsg, TPresent } from "./types";
+import { State, type ClientMsg, type RoomMsg, Player, type PlayerStateMsg } from "./types";
 
 export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
 
@@ -30,38 +30,31 @@ export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
     // this.start();
   }
 
-  onJoin(player) {
+  onJoin({ sessionId }) {
     //
-    const present = new TPresent();
-    present.id = player.sessionId;
-    present.position.set(0, 0, 0);
-    this.state.presents.push(present);
+    const player = this.state.players.get(sessionId);
+    player.position.set(0, 0, 0);
 
-    this.start();
+    this.startGame()
   }
 
-  onLeave(player) {
-    const idx = this.state.presents.findIndex((p) => p.id == player.sessionId);
+  onLeave({ sessionId }) {
+    //
+  }
 
-    if (idx >= 0) {
-      this.state.presents.splice(idx, 1);
-    }
+  updatePlayerState(player: Player, message: PlayerStateMsg) {
+    //
+    player.position.copy(message.position);
+    player.rotation.copy(message.rotation);
+    player.animation = message.animation;
 
-    if (this.state.presents.length < 2) {
-      this.stop();
-    }
   }
 
   onMessage(message: ClientMsg, player): void {
     //
     if (message.type == "player-state") {
-      const present = this.state.presents.find((p) => p.id == player.sessionId);
-
-      if (present) {
-        present.position.copy(message.position);
-        present.rotation.copy(message.rotation);
-        present.animation = message.animation;
-      }
+      
+      this.updatePlayerState(player, message);
     }
   }
 
