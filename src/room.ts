@@ -1,6 +1,7 @@
 import { GameRoom } from "@oogg/game-server";
 import { State, type ClientMsg, type RoomMsg, Player, type PlayerStateMsg } from "./types";
 
+
 export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
 
   tickRate = 30;
@@ -22,24 +23,37 @@ export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
 
   onRequestPrestart() {
     //
-    // this.prestart();
+    this.notifyGamePrestart();
   }
 
   onRequestStart() {
     //
-    // this.start();
+    this.startGame();
   }
 
   onJoin({ sessionId }) {
     //
+    
     const player = this.state.players.get(sessionId);
     player.position.set(0, 0, 0);
-
-    this.startGame()
   }
 
   onLeave({ sessionId }) {
     //
+  }
+
+  validateJoin({ sessionId }) {
+
+    console.log("validateJoin", sessionId);
+
+    super.validateJoin({ sessionId });
+
+    if (this.status != "idle") {
+      throw new Error("Game already started");
+    }
+
+    console.log("validateJoin", sessionId, "ok");
+
   }
 
   updatePlayerState(player: Player, message: PlayerStateMsg) {

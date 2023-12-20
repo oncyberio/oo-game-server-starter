@@ -52,7 +52,7 @@ export class State extends Schema {
     player.animation = data.animation;
     
     this.players.set(data.sessionId, player);
-    console.log("added player", player.toJSON());
+    // console.log("added player", player.toJSON());
   }
 
   removePlayer(id: string) {
