@@ -4,11 +4,12 @@ import { State, type ClientMsg, type RoomMsg, Player, type PlayerStateMsg } from
 
 export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
 
+
   tickRate = 30;
 
   state = new State();
 
-  // simulatedLatency = 5000;
+  simulatedLatency = 100;
 
   static async onAuth() {
     // throw new Error("Not Authorized");
@@ -19,23 +20,24 @@ export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
     // setInterval(() => {
     //   this.broadcast("tick");
     // }, 1000);
+
   }
 
-  onRequestPrestart() {
+  async onRequestStart() {
     //
-    this.notifyGamePrestart();
-  }
-
-  onRequestStart() {
-    //
-    this.startGame();
+    // console.log("onRequestStart");
+    await this.startGame(3);
+    console.log("game started");
+    this.state.timer.reset(); 
   }
 
   onJoin({ sessionId }) {
     //
-    
     const player = this.state.players.get(sessionId);
-    player.position.set(0, 0, 0);
+
+    const x = Math.random() * 10 - 5;
+    const z = Math.random() * 10 - 5;
+    player.position.set(x, 0, z);
   }
 
   onLeave({ sessionId }) {
@@ -77,6 +79,13 @@ export class MyRoom extends GameRoom<State, ClientMsg, RoomMsg> {
   }
 
   onUpdate(dt: number) {
-    // this.state.cubes = this.simulation.state.cubes;
+
+    this.state.timer.step(dt);
+
+    if (this.state.timer.elapsedSecs > this.state.timer.maxTimeSecs) {
+      this.stopGame();
+      console.log("game finished");
+    }
+    
   }
 }

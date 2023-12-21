@@ -18,11 +18,6 @@ export class XYZ extends Schema {
   }
 }
 
-export enum GameStatus {
-    Waiting = 0,
-    Playing = 1,
-    Finished = 2,
-}
 
 export class Player extends Schema {
   //
@@ -30,9 +25,28 @@ export class Player extends Schema {
   @type("string") userId: string = "";
   @type("string") name: string = "";
   @type("string") role: string = "player";
+  @type("number") latency: number = 0;
   @type(XYZ) position: XYZ = new XYZ();
   @type(XYZ) rotation: XYZ = new XYZ();
   @type("string") animation: string = "idle";
+
+}
+
+export class GameTimer extends Schema {
+  @type("number") genesisTime: number = Date.now();
+  @type("number") gameStart: number = 0;
+  @type("number") elapsedSecs: number = 0;
+  @type("number") maxTimeSecs: number = 10;
+
+  reset() {
+    this.gameStart = Date.now();
+    this.elapsedSecs = 0;
+  }
+
+  step(dt: number) {
+    this.elapsedSecs += dt;
+    // console.log("elapsedSecs", this.elapsedSecs);
+  }
 }
 
 export class State extends Schema {
@@ -41,12 +55,15 @@ export class State extends Schema {
   @type("number") timestamp: number = 0;
   @type({ map: Player }) players = new MapSchema<Player>();
 
+  @type(GameTimer) timer: GameTimer = new GameTimer();
+
   addPlayer(data: any) {
     const player = new Player();
     player.sessionId = data.sessionId;
     player.userId = data.userId;
     player.name = data.name;
     player.role = data.role;
+    player.latency = data.latency;
     player.position.copy(data.position);
     player.rotation.copy(data.rotation);
     player.animation = data.animation;
@@ -74,4 +91,3 @@ export type ClientMsg =
 
 // Server -> Client messages
 export type RoomMsg = never;
-  
