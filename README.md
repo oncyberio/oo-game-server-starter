@@ -177,8 +177,6 @@ export class MyRoom extends GameRoom<RoomState> {
 
 - `room.onStop(() => {...})` : called when the room receives a stop game notification from the server
 
-- `room.onConnect(func)` : called when the room is connected
-
 - `room.onPlayerJoined((player) => { ... })` : called when a new player joins the room
 
 - `room.onPlayerLeft((player) => { ... })` : called when the room is connected
