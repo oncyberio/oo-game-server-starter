@@ -12,7 +12,7 @@ This is a template repo to create game servers for oo.gg games
 - run `npm run dev` to test, the game server will start on `http://127.0.0.1:1999`. You can set this address in
 the client script to connect to the room.
 
-
+- When you're ready to publish the server code. run `npm run deploy`, this will give you an online address, you can then replace the local address in the client script.
 
 ## Server Logic
 
