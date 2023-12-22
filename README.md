@@ -32,11 +32,35 @@ To add general game attributes, add the relevent properties to the `State` class
 The state is synchronized regularly for all client scripts; You can customize the rate in `src/room.ts` by setting the `tickRate` property;
 
 
+** It's important to not delete the current state properties defined in this template (like `players` ...); they're used internally by the multiplayer package **
+
 
 
 ### Define the Room behavior
 
-the room behavior is defined in `src/room.ts`
+The room behavior is defined in `src/room.ts`. 
+
+You can customize the room behavior by setting room properties and implementing some callback methods
+
+```ts
+export class MyRoom extends GameRoom<RoomState> {
+
+  // Properties
+
+  tickRate = 30
+  // ...
+
+  // Callback methods
+
+  onPreload() { ... }
+
+  onJoin(player) { ... }
+
+  onMessage(message, player) { ... }
+
+  // ...
+}
+```
 
 Let's look on how to customize room class 
 
@@ -83,3 +107,109 @@ Let's look on how to customize room class
 
 
 
+
+## Client Logic
+
+
+### Connecting to the server Room
+
+
+```ts
+import { GameClient } from "@oo/scripting"
+
+const host = "http://127.0.0.1:1999"
+// or const host = your deployement url (got from npm run deploy)
+
+class GameManager {
+
+
+    async onPreload() {
+
+        this.room = GameClient.join({ host })
+
+        await this.room.ready
+
+        // If you want to synchronize the players state (position, rotation, animation)
+        this.playerSync = this.room.getPlayerStateSync()
+    }
+
+    onUpdate(dt: number) {
+
+        this.playerSync.update(dt)
+    }
+
+}
+```
+
+
+### Sending Messages to the server
+
+```ts
+this.room.send({ type: "hit", target: "myTarget" })
+
+```
+
+You can then handle this message in the server room. For example:
+
+```ts
+export class MyRoom extends GameRoom<RoomState> {
+
+  // ...
+
+  onMessage(message, player) {
+
+    if (message.type === "hit") {
+
+        player.points++
+    }
+  }
+
+  // ...
+}
+```
+
+### Handling room events
+
+- `room.onConnect(() => {...})` : called when the room is connected
+
+- `room.onDisconnect(() => {...})` : called when the room is connected
+
+- `room.onStart((countdown) => {...})` : called when the room receives a start game notification from the server
+
+- `room.onStop(() => {...})` : called when the room receives a stop game notification from the server
+
+- `room.onConnect(func)` : called when the room is connected
+
+- `room.onPlayerJoined((player) => { ... })` : called when a new player joins the room
+
+- `room.onPlayerLeft((player) => { ... })` : called when the room is connected
+
+
+### Client room methods and properties
+
+- `room.send(msg)` : sends a message to the server room
+
+- `room.requestStart()` : sends a start game request to the server; only the room host is allowed to send a start game request
+
+- `room.leave()` : disconnects from the server room
+
+- readonly `room.state` : State of the room as defined in the server; the state is synchronized following the defined tick rate of the room. **Only the server can change the room state**; to initiate a change from client side, you must do through sending messages.
+
+- readonly `room.ready` : promise that resolves when the room is connected and properly synced with the server
+
+- readonly `room.isHost` : true is the player is the room's host
+
+- readonly `room.roomId` : id of the room
+
+- readonly `room.sessionId` : current player session id
+
+- readonly `room.tickRate` : tick rate of the server room
+
+- `room.getPlayerSync()`: returns a helper object to sync all players states (position, rotation and animation); the object sends `player-state` messages regularly to the server to notify of local player changes; and sync remote player state with the 3D scene using snapshot interpolation. 
+
+Client side, you must call `playerSync.update(dt)` on the update loop
+
+Server side, the default template handles the `player-state` message by updating player state on the server room. You can sync other proeprties in the `updatePlayerState() {}` method.
+
+
+>Currently the player state sync is not server authoritative, so it's not well suited to fast paced contact games that involves precise collision handling. Server authoritative handling is a WIP
