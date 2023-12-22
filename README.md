@@ -18,7 +18,7 @@ the client script to connect to the room.
 
 ### Define the Room State
 
-The room state is defined in `src/types.ts`; The default template includes a preset for players and a game timer.
+The room state is defined in `src/types` folder; The default template includes a preset for players and a game timer.
 
 You can extend the template by adding properties to the relevent class. Every property must be annotated with
 a `@type(...)`. This is needed so that the room server can efficiently serialize the state over the network.
@@ -26,7 +26,7 @@ Currently we use `@colyseus/schema` package for state definition and serializati
 
 To add player specific attributes, add the relevent properties to the `Player` class.
 
-To add general game attributes, add the relevent properties to the `State` class.
+To add general game attributes, add the relevent properties to the `RoomState` class.
 
 The state is synchronized regularly for all client scripts; You can customize the rate in `src/room.ts` by setting the `tickRate` property;
 
