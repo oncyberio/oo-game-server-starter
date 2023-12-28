@@ -9,6 +9,7 @@ export class Player extends Schema {
   @type("string") name: string = "";
   @type("string") role: string = "player";
   @type("number") latency: number = 0;
+  @type("number") jitter: number = 0;
   @type(XYZState) position: XYZState = new XYZState();
   @type(XYZState) rotation: XYZState = new XYZState();
   @type("string") animation: string = "idle";
