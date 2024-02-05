@@ -13,7 +13,7 @@
     "three": "github:oncyberio/three.js#b34c7f8717d8e2ad760dad456a735b3b5347df53"
   },
   "devDependencies": {
-    "partykit": "0.0.44",
+    "partykit": "^0.0.82",
     "typescript": "^5.3.3"
   }
 }
