@@ -13,5 +13,5 @@ export class Player extends Schema {
   @type(XYZState) position: XYZState = new XYZState();
   @type(XYZState) rotation: XYZState = new XYZState();
   @type("string") animation: string = "idle";
-
+  @type("string") vrmUrl: string = "";
 }
