@@ -65,6 +65,7 @@ export class MyRoom extends GameRoom<RoomState> {
                 player.rotation.copy(message.rotation)
                 player.animation = message.animation
                 player.vrmUrl = message.vrmUrl
+                player.scale = message.scale
                 break
             case "broadcast":
                 /**
