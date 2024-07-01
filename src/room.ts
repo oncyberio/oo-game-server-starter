@@ -1,6 +1,8 @@
-import { GameRoom } from "@oogg/game-server"
 import { RoomState } from "./types/RoomState"
+
 import type { Player } from "./types/Player"
+
+import { GameRoom } from "@oogg/game-server"
 
 export class MyRoom extends GameRoom<RoomState> {
     tickRate = 10
@@ -9,7 +11,7 @@ export class MyRoom extends GameRoom<RoomState> {
 
     joinAfterStart = true
 
-    maxPlayers: number = 200
+    maxPlayers: number = 15
 
     /**
      * This method is called when the room is created
@@ -51,7 +53,6 @@ export class MyRoom extends GameRoom<RoomState> {
      * Handle room messages sent by the client script
      */
     onMessage(message: any, player: Player): void {
-      
         switch (message.type) {
             case "player-state":
                 /**
@@ -61,11 +62,35 @@ export class MyRoom extends GameRoom<RoomState> {
                 /**
                  * Sync the player state, in case the game uses a state based sync mode
                  */
-                player.position.copy(message.position)
-                player.rotation.copy(message.rotation)
-                player.animation = message.animation
-                player.vrmUrl = message.vrmUrl
-                player.scale = message.scale
+                const [
+                    posX,
+                    posY,
+                    posZ,
+                    rotX,
+                    rotY,
+                    rotZ,
+                    animation,
+                    scale,
+                    vrmUrl,
+                    text,
+                ] = message.data;
+
+                console.log("player-state", message.data)
+                
+                player.position.copy({
+                    x: posX,
+                    y: posY,
+                    z: posZ,
+                })
+                player.rotation.copy({
+                    x: rotX,
+                    y: rotY,
+                    z: rotZ,
+                })
+                player.animation = animation
+                player.vrmUrl = vrmUrl
+                player.scale = scale
+                player.text = text
                 break
             case "broadcast":
                 /**

@@ -1,5 +1,8 @@
 {
-  "name": "oo-server",
+  "name": "oo-default-party",
   "main": "src/server.ts",
-  "compatibilityDate": "2023-12-11"
+  "compatibilityDate": "2023-12-11",
+  "parties": {
+    "rooms": "src/rooms.ts"
+  }
 }

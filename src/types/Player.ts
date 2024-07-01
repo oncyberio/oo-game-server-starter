@@ -15,4 +15,5 @@ export class Player extends Schema {
   @type("string") animation: string = "idle";
   @type("string") vrmUrl: string = "";
   @type("number") scale: number = 1;
+  @type("string") text: string = "";
 }
