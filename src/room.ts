@@ -75,8 +75,6 @@ export class MyRoom extends GameRoom<RoomState> {
                     text,
                 ] = message.data;
 
-                console.log("player-state", message.data)
-                
                 player.position.copy({
                     x: posX,
                     y: posY,
