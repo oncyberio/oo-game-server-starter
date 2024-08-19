@@ -21,6 +21,8 @@ export class RoomState extends Schema {
     player.position.copy(data.position);
     player.rotation.copy(data.rotation);
     player.animation = data.animation;
+    player.text = data.text;
+    player.state = data.state;
     
     this.players.set(data.sessionId, player);
     // console.log("added player", player.toJSON());

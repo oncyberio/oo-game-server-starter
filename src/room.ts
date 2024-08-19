@@ -90,6 +90,9 @@ export class MyRoom extends GameRoom<RoomState> {
                 player.scale = scale
                 player.text = text
                 break
+            case "player-extra-state":
+                player.state = JSON.stringify(message?.payload || "")
+                break
             case "broadcast":
                 /**
                  * Broadcast a message to all players in the room

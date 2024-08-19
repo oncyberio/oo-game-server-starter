@@ -16,4 +16,5 @@ export class Player extends Schema {
   @type("string") vrmUrl: string = "";
   @type("number") scale: number = 1;
   @type("string") text: string = "";
+  @type("string") state: string = "";
 }
